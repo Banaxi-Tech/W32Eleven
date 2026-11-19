@@ -13,6 +13,7 @@ options:
   --vgabios FILE    VGA BIOS for the guest (default: /usr/share/qemu/vgabios-stdvga.bin)
   --ram MIB         guest RAM (default: all the host RAM the emulator can spare)
   --args "..."      extra emulator command line options
+  --no-slim         automatic install without the slim settings for slow PCs
 
 What changes (everything else stays byte for byte, including the UDF and
 ISO 9660 file systems and the UEFI boot entry, so UEFI PCs still boot Windows
@@ -23,8 +24,10 @@ natively):
   - the original BIOS entry is saved in the appended area (--restore undoes
     the patch, then the image can be truncated back to its old size).
 
-Boot media: CD/DVD (El Torito) and virtual machines' CD drives. USB sticks
-need a hybrid MBR, which this does not write yet.
+  - the ISO's unused first sector gets a hybrid MBR (GRUB boot sector and one
+    partition entry), so the same image also boots from a USB stick.
+
+Boot media: CD/DVD (El Torito), USB sticks and other BIOS disks (dd the image).
 """
 import os, shutil, struct, subprocess, sys, tempfile
 
